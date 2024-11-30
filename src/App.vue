@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { TresCanvas } from '@tresjs/core'
 import { fpsControls  } from './fpscontrols'
+import OverlayUI from './OverlayUI.vue'
 
 </script>
 
 <template>
+  <OverlayUI />
   <TresCanvas>
     <TresPerspectiveCamera
       :position="[0, 0, 3]"
