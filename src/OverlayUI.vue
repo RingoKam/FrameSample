@@ -1,10 +1,8 @@
 <template>
     <!-- 
-    TODO: hide and show depending on devices
-    example, if mobile, show input box
-    if desktop, show id
-    
-    TODO: figure out what we need to send in between mobile and desktop
+    TODO: Get Gyro scope working
+    TODO: Start building out the parent UI
+    TODO: Start designing the environment
     -->
   <div class="overlay-ui">
     HELLO I AM HERE!
@@ -15,10 +13,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, defineProps, defineEmits } from 'vue'
+
+const props = defineProps({
+    isControl: Boolean
+})
+
+const emits = defineEmits(['update:isControl'])
 
 const peer = new Peer();
 const myId = ref();
+
 const inputId = ref("");
 
 peer.on('open', (id) => {
@@ -26,6 +31,7 @@ peer.on('open', (id) => {
     myId.value = id;
 });
 
+// screen connected
 peer.on('connection', function(conn) { 
     alert("you are connected!");
 });
@@ -33,6 +39,12 @@ peer.on('connection', function(conn) {
 const onConnect = () => {
     console.log("connecting to " + inputId.value);
     const conn = peer.connect(inputId.value);
+    console.log(conn);
+    // on connected, set isControl to true
+    conn.on('open', () => {
+        console.log("connected to " + inputId.value);
+        emits('update:isControl', true);
+    });
 }    
 
 </script>
