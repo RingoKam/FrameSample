@@ -13,6 +13,8 @@ const isControl = ref(false)
     v-model:isControl="isControl" 
   />
   <TresCanvas>
+    <!-- track the camera position and emit that out as an event 
+    to mobile so we can sync up both camera-->
     <TresPerspectiveCamera
       :position="[0, 0, 3]"
       :fov="45"
@@ -21,6 +23,7 @@ const isControl = ref(false)
       :far="1000"
     />
     <fpsControls>
+      <MobileJoystick />
     </fpsControls>
     <TresMesh>
       <TresTorusGeometry :args="[1, 0.5, 16, 32]" />
