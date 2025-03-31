@@ -16,7 +16,8 @@
 import { ref, defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
-    isControl: Boolean
+    isControl: Boolean,
+    camera: Object
 })
 
 const emits = defineEmits(['update:isControl'])
@@ -25,6 +26,11 @@ const peer = new Peer();
 const myId = ref();
 
 const inputId = ref("");
+
+setInterval(() => {
+    var cameraJson = camera.toJSON("matrix")
+    console.log(cameraJson)
+}, 1000)
 
 peer.on('open', (id) => {
     console.log('My peer ID is: ' + id);
