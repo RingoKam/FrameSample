@@ -27,11 +27,6 @@ const myId = ref();
 
 const inputId = ref("");
 
-setInterval(() => {
-    var cameraJson = camera.toJSON("matrix")
-    console.log(cameraJson)
-}, 1000)
-
 peer.on('open', (id) => {
     console.log('My peer ID is: ' + id);
     myId.value = id;
@@ -40,16 +35,30 @@ peer.on('open', (id) => {
 // screen connected
 peer.on('connection', function(conn) { 
     alert("you are connected!");
+
+     conn.on('data', (payload) => {
+        console.log("package received", payload)
+    })
 });
 
 const onConnect = () => {
     console.log("connecting to " + inputId.value);
     const conn = peer.connect(inputId.value);
-    console.log(conn);
+
     // on connected, set isControl to true
     conn.on('open', () => {
         console.log("connected to " + inputId.value);
         emits('update:isControl', true);
+
+        setInterval(() => {
+            var cameraJson = props.camera.toJSON()
+            var matrix = cameraJson.object.matrix;
+            console.log(matrix)
+            conn.send({
+                type: "camera:update",
+                payload: matrix
+            })
+        }, 1000)
     });
 }    
 
