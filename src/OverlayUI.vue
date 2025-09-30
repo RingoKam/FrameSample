@@ -15,12 +15,13 @@
 <script setup>
 import { ref, defineProps, defineEmits } from 'vue'
 
+
 const props = defineProps({
     isControl: Boolean,
     camera: Object
 })
 
-const emits = defineEmits(['update:isControl'])
+const emits = defineEmits(['update:isControl', 'sync-camera'])
 
 const peer = new Peer();
 const myId = ref();
@@ -36,8 +37,9 @@ peer.on('open', (id) => {
 peer.on('connection', function(conn) { 
     alert("you are connected!");
 
-     conn.on('data', (payload) => {
+     conn.on('data', ({payload}) => {
         console.log("package received", payload)
+        emits("sync-camera", payload.matrix)
     })
 });
 
@@ -53,10 +55,14 @@ const onConnect = () => {
         setInterval(() => {
             var cameraJson = props.camera.toJSON()
             var matrix = cameraJson.object.matrix;
-            console.log(matrix)
+            var { position, rotation } = cameraJson.object;
+            console.log(matrix, position, rotation)
             conn.send({
                 type: "camera:update",
-                payload: matrix
+                payload: {
+                    matrix,
+                    position
+                }
             })
         }, 1000)
     });
